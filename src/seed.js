@@ -55,7 +55,13 @@ async function seed(total = 10000) {
 }
 
 if (require.main === module) {
-  mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://supriyonag552_db_user:J7wcfKcVUVwb5EId@cluster0.by1ppuc.mongodb.net/salary_manager?appName=Cluster0')
-    .then(() => seed()).then((n) => { console.log(`Seeded ${n} employees`); return mongoose.disconnect(); });
+  const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/salary_manager';
+  mongoose.connect(mongoUri)
+    .then(() => seed())
+    .then((n) => { console.log(`Seeded ${n} employees`); return mongoose.disconnect(); })
+    .catch((err) => {
+      console.error('Seed failed:', err.message);
+      process.exit(1);
+    });
 }
 module.exports = { seed };
